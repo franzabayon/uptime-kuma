@@ -84,10 +84,17 @@ class Teams extends NotificationProvider {
                 // format URL as markdown syntax, to be clickable
                 value: `[${monitorUrl}](${monitorUrl})`,
             });
+
             actions.push({
                 "type": "Action.OpenUrl",
                 "title": "Visit Monitor URL",
                 "url": monitorUrl
+            });
+
+            actions.push({
+                "type": "Action.OpenUrl",
+                "title": "Visit Status Page",
+                "url": "https://status.ywsupport.com/status/sites"
             });
         }
 
