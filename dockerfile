@@ -62,28 +62,10 @@ RUN apt update && \
 
 
 
-
-
-############################################
-# Build in Node.js
-############################################
-FROM base2 AS build
-USER node
-WORKDIR /app
-
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
-COPY --chown=node:node .npmrc .npmrc
-COPY --chown=node:node package.json package.json
-COPY --chown=node:node package-lock.json package-lock.json
-RUN npm ci --omit=dev
-COPY . .
-COPY --chown=node:node --from=base2 /app/extra/healthcheck /app/extra/healthcheck
-RUN mkdir ./data
-
 ############################################
 # ⭐ Main Image
 ############################################
-FROM build AS release
+FROM base2 AS release
 USER node
 WORKDIR /app
 
@@ -99,3 +81,16 @@ HEALTHCHECK --interval=60s --timeout=30s --start-period=180s --retries=5 CMD ext
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["node", "server/server.js"]
 
+############################################
+# Rootless Image
+############################################
+FROM release AS rootless
+
+############################################
+# Mark as Nightly
+############################################
+FROM release AS nightly
+RUN npm run mark-as-nightly
+
+FROM nightly AS nightly-rootless
+USER node
