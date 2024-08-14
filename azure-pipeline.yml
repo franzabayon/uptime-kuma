@@ -1,7 +1,7 @@
 # DockerBuild Pipeline
 ---
 trigger:
-- main
+- master
 
 pool:
   vmImage: ubuntu-latest
