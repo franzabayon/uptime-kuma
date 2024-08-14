@@ -4,7 +4,7 @@ trigger:
 - master
 
 pool:
-  vmImage: macos-latest
+  vmImage: Ubuntu 20.04
 
 stages:
   - stage: ContinousIntegration
