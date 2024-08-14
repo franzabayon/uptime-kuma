@@ -59,3 +59,19 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/* && \
     apt --yes autoremove && \
     chown -R node:node /var/lib/mysql
+
+
+############################################
+# Build in Node.js
+############################################
+FROM base2 AS build
+USER node
+WORKDIR /app
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+COPY --chown=node:node .npmrc .npmrc
+COPY --chown=node:node package.json package.json
+COPY --chown=node:node package-lock.json package-lock.json
+RUN npm ci --omit=dev
+COPY . .
+RUN mkdir ./data
