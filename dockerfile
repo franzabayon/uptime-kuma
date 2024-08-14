@@ -52,7 +52,7 @@ COPY ./docker/etc/sudoers /etc/sudoers
 # MariaDB, Chromium and fonts
 # Make sure to reuse the slim image here. Uncomment the above line if you want to build it from scratch.
 # FROM base2-slim AS base2
-FROM louislam/uptime-kuma:base2-slim AS base2
+FROM base2-slim AS base2
 ENV UPTIME_KUMA_ENABLE_EMBEDDED_MARIADB=1
 RUN apt update && \
     apt --yes --no-install-recommends install chromium fonts-indic fonts-noto fonts-noto-cjk mariadb-server && \
@@ -63,12 +63,6 @@ RUN apt update && \
 
 
 
-############################################
-# Build in Golang
-# Run npm run build-healthcheck-armv7 in the host first, otherwise it will be super slow where it is building the armv7 healthcheck
-# Check file: builder-go.dockerfile
-############################################
-FROM base2 AS build_healthcheck
 
 ############################################
 # Build in Node.js
@@ -83,13 +77,13 @@ COPY --chown=node:node package.json package.json
 COPY --chown=node:node package-lock.json package-lock.json
 RUN npm ci --omit=dev
 COPY . .
-COPY --chown=node:node --from=build_healthcheck /app/extra/healthcheck /app/extra/healthcheck
+COPY --chown=node:node --from=base2 /app/extra/healthcheck /app/extra/healthcheck
 RUN mkdir ./data
 
 ############################################
 # ⭐ Main Image
 ############################################
-FROM base2 AS release
+FROM build AS release
 USER node
 WORKDIR /app
 
