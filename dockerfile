@@ -60,6 +60,21 @@ RUN apt update && \
     apt --yes autoremove && \
     chown -R node:node /var/lib/mysql
 
+############################################
+# Build in Node.js
+############################################
+FROM base2 AS build
+USER node
+WORKDIR /app
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+COPY --chown=node:node .npmrc .npmrc
+COPY --chown=node:node package.json package.json
+COPY --chown=node:node package-lock.json package-lock.json
+RUN npm ci --omit=dev
+COPY . .
+RUN mkdir ./data
+
 
 
 ############################################
@@ -80,17 +95,3 @@ EXPOSE 3001
 HEALTHCHECK --interval=60s --timeout=30s --start-period=180s --retries=5 CMD extra/healthcheck
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["node", "server/server.js"]
-
-############################################
-# Rootless Image
-############################################
-FROM release AS rootless
-
-############################################
-# Mark as Nightly
-############################################
-FROM release AS nightly
-RUN npm run mark-as-nightly
-
-FROM nightly AS nightly-rootless
-USER node
