@@ -30,7 +30,7 @@ stages:
               containerRegistry: 'servcon-acrywdevopscore'
               repository: '$(Build.Repository.Name)'
               command: 'build'
-              Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+              Dockerfile: '$(Build.SourcesDirectory)/dockerfile'
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 $(Build.SourceBranchName) 
@@ -42,7 +42,7 @@ stages:
               containerRegistry: 'servcon-acrywdevopscore'
               repository: '$(Build.Repository.Name)'
               command: 'push'
-              Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
+              Dockerfile: '$(Build.SourcesDirectory)/dockerfile'
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
                 $(Build.SourceBranchName)
