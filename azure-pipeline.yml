@@ -33,7 +33,7 @@ stages:
               Dockerfile: '$(Build.SourcesDirectory)/dockerfile'
               buildContext: '$(Build.SourcesDirectory)'
               tags: |
-                $(Build.SourceBranchName) 
+                $(Build.SourceBranchName)
                 latest
 
           - task: Docker@2
