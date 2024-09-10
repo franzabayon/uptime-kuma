@@ -1,7 +1,7 @@
 # DockerBuild Pipeline 
 ---
 trigger:
-- master
+- master   
 
 pool:
   vmImage: Ubuntu 20.04
@@ -11,7 +11,7 @@ stages:
     displayName: Continous Integration
     jobs:
       - job: BuildDockerContainerImage
-        displayName: 'CI - Docker(Azure Container Registry)'
+        displayName: 'CI - Docker(Azure Container Registry) setups'
 
         steps:
           - checkout: self
